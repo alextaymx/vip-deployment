@@ -29,12 +29,10 @@ def main():
     We are taking the model with highest accuracy to predict the hand gesture images
     The model is trained with ASL and MSL dataset''')
   # st.subheader("_Pretrained model : -> (Preprocessing is not shown)_")
-  uploaded_file=None
-  if uploaded_file is not None:
-    sheader = st.warning('Please upload an image of your hand: ->')
-  else:
-    sheader = st.success('''**Image uploaded**\n
-    Please look at the results below-->''')
+
+  sheader = st.warning('''**Please upload an image of your hand: ->**\n
+    The model will predict the alphabets according to your hand gesture''')
+
   uploaded_file = st.file_uploader("Choose a image file", type=["png","jpg"])
 
   if uploaded_file is not None:
