@@ -3,7 +3,7 @@ import numpy as np
 # from PIL import Image
 PAGE_CONFIG = {"page_title":"VIP.project","page_icon":":smiley:","layout":"centered"}
 st.beta_set_page_config(**PAGE_CONFIG)
-# st.set_option('deprecation.showfileUploaderEncoding', False)
+st.set_option('deprecation.showfileUploaderEncoding', False)
 from functions import *
 from tensorflow.python.platform import gfile
 
