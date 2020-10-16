@@ -90,8 +90,8 @@ def main():
       Below is the predicted probability for each classes: ''')
         df = pd.DataFrame(predictions, columns=[labels[key] for key in labels])
         st.table(df.T)
-        st.success('''**Predicted result: **\n
-      Highest probability: {} ---> {}'''.format(predicted_class,predicted_label))
+        st.success('''**Predicted result:  {} **\n
+      Highest probability: {} ---> {}'''.format(predicted_label,predicted_class,predicted_label))
 
         _=st.text('\n'),st.text('\n'),st.text('\n')
 
