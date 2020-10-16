@@ -39,9 +39,9 @@ def main():
 
   uploaded_file = st.file_uploader("Choose a image file", type=["png","jpg","jpeg"])
   with st.spinner('Please wait while execution is in progress:'):
-    my_bar = st.empty
+    my_bar = st.empty()
     if uploaded_file is not None:
-	my_bar.progress(0)
+        my_bar.progress(0)
         sheader.empty()
         # Convert the file to an opencv image.
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
