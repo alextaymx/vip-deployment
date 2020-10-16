@@ -97,8 +97,8 @@ def main():
 
         st.info('Bounding box with hand detected')
         st.image(img, channels="RGB", use_column_width=True)
-    st.balloons()
-    my_bar.progress(100)
+        my_bar.progress(100)
+        st.balloons()
   _=st.text('\n'),st.text('\n'),st.text('\n')
   st.warning('''**This demo is maintained by:**\n
     Special credit to -> Teng Jun Siong''')
