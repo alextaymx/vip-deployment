@@ -1,11 +1,15 @@
 import streamlit as st
 import numpy as np
+import pandas as pd
 # from PIL import Image
 PAGE_CONFIG = {"page_title":"VIP.project","page_icon":":smiley:","layout":"centered"}
 st.beta_set_page_config(**PAGE_CONFIG)
 st.set_option('deprecation.showfileUploaderEncoding', False)
 from functions import *
+# from keras.applications.mobilenet import preprocess_input
+from tensorflow.keras.applications.mobilenet import preprocess_input
 from tensorflow.python.platform import gfile
+
 
 def main():
   # st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -33,7 +37,7 @@ def main():
   sheader = st.warning('''**Please upload an image of your hand: ->**\n
     The model will predict the alphabets according to your hand gesture''')
 
-  uploaded_file = st.file_uploader("Choose a image file", type=["png","jpg"])
+  uploaded_file = st.file_uploader("Choose a image file", type=["png","jpg","jpeg"])
 
   if uploaded_file is not None:
       st.balloons()
@@ -49,21 +53,6 @@ def main():
       # img2 = st.image(img_array, caption='Make sure this is a hand', use_column_width=True)
       # st.write(type(img_array),img_array.shape)
 
-      resized = cv2.resize(opencv_image, (192,192), interpolation = cv2.INTER_AREA)
-      reshaped = resized.reshape(1,192, 192,3)
-      # img = st.image(resized, channels="BGR", caption='Make sure this is a hand', use_column_width=True)
-      st.write("Input argument shape--> ",reshaped.shape)
-
-      labels = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'G', 6: 'H', 7: 'I', 8: 'L', 9: 'O', 10: 'Q', 11: 'R', 12: 'S', 13: 'U', 14: 'V', 15: 'W', 16: 'Y'}
-      predictions = new_model.predict(reshaped)
-      predicted_class = np.argmax(predictions,axis=1).item(0)
-      predicted_label = labels[predicted_class]
-      st.warning("Predicted probability for each classes: ")
-      st.dataframe(predictions)
-      st.info('''**Predicted result: **\n
-    Highest probability: {} ---> {}'''.format(predicted_class,predicted_label))
-      # st.write(" ",predicted_class," --> ",predicted_label)
-      
       # hand tracking
       detection_graph, sess = load_inference_graph()
       # Definite input and output Tensors for detection_graph
@@ -81,7 +70,28 @@ def main():
       image_np = cv2.cvtColor(opencv_image, cv2.COLOR_BGR2RGB)
       im_height,im_width,c= image_np.shape
       boxes, scores = detect_objects(image_np,detection_graph, sess)
-      img = draw_box_on_image(num_hands_detect, score_thresh,scores, boxes, im_width, im_height,image_np)
+      img,cropped_img = draw_box_on_image(num_hands_detect, score_thresh,scores, boxes, im_width, im_height,image_np)
+
+
+      resized = cv2.resize(cropped_img, (192,192), interpolation = cv2.INTER_AREA)
+      reshaped = resized.reshape(1,192, 192,3)
+      # img = st.image(resized, channels="BGR", caption='Make sure this is a hand', use_column_width=True)
+      st.write("Input argument shape--> ",reshaped.shape)
+
+      labels = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'G', 6: 'H', 7: 'I', 8: 'L', 9: 'O', 10: 'Q', 11: 'R', 12: 'S', 13: 'U', 14: 'V', 15: 'W', 16: 'Y'}
+      reshaped = preprocess_input(reshaped)
+      predictions = new_model.predict(reshaped)
+      predicted_class = np.argmax(predictions,axis=1).item(0)
+      predicted_label = labels[predicted_class]
+      st.success("Predicted probability for each classes: ")
+      st.write(type(predictions))
+      df = pd.DataFrame(predictions, columns=[labels[key] for key in labels])
+      st.table(df.T)
+      st.info('''**Predicted result: **\n
+    Highest probability: {} ---> {}'''.format(predicted_class,predicted_label))
+      # st.write(" ",predicted_class," --> ",predicted_label)
+      
+
       # plt.imshow(img)
       st.image(img, channels="RGB", caption='Bounding box', use_column_width=True)
 

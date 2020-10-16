@@ -4,15 +4,6 @@ import numpy as np
 import tensorflow as tf
 import cv2
 from tensorflow.python.platform import gfile
-# import os
-
-# import matplotlib.pyplot as plt
-# from keras.preprocessing.image import ImageDataGenerator, load_img
-# from keras.applications import MobileNet
-# from keras.applications.mobilenet import preprocess_input
-# from keras.layers import *
-# from tensorflow import keras
-# from keras.losses import sparse_categorical_crossentropy
 
 
 @st.cache
@@ -29,29 +20,28 @@ def get_group_members():
     df = df.set_index("No")
     return df
 
-
 @st.cache(allow_output_mutation=True)
 def loadData():
     new_model = tf.keras.models.load_model('aslmslNotTrainableLatest.h5')
+    # new_model = tf.keras.models.load_model('mobilenet_unfreeze-6_lowest_lost.h5')
     return new_model
 
 
 def draw_box_on_image(num_hands_detect, score_thresh, scores, boxes, im_width, im_height, image_np):
     for i in range(len(scores)):
-        (left, right, top, bottom) = (boxes[i][1] * im_width, boxes[i][3] * im_width,
-                                      boxes[i][0] * im_height, boxes[i][2] * im_height)
-
-        boxArea = (right-left)*(bottom-top)
-        imgArea = (im_width)*(im_height)
-        # print(boxArea,"box area")
-        # print(imgArea,"img area")
-        # print(boxArea/imgArea,"ratio")
-        if (boxArea/imgArea >= 0.1):
+          (left, right, top, bottom) = (boxes[i][1] * im_width, boxes[i][3] * im_width,
+                                        boxes[i][0] * im_height, boxes[i][2] * im_height)
+          
+          boxArea = (right-left)*(bottom-top)
+          imgArea = (im_width)*(im_height)
+          # print(boxArea,"box area")
+          # print(imgArea,"img area")
+          # print(boxArea/imgArea,"ratio")
+          if (boxArea/imgArea>=0.1):
             # p1 = (int(left), int(top))
             # p2 = (int(right), int(bottom))
             # cv2.rectangle(image_np, p1, p2, (77, 255, 9), 50, 50)
-            return image_np[int(top):int(bottom), int(left):int(right), :]
-
+            return image_np[int(top):int(bottom),int(left):int(right),:]
 
 @st.cache(allow_output_mutation=True)
 def load_inference_graph():
@@ -67,7 +57,6 @@ def load_inference_graph():
         sess = tf.compat.v1.Session(graph=detection_graph)
     print(">  ====== Hand Inference graph loaded.")
     return detection_graph, sess
-
 
 def detect_objects(image_np, detection_graph, sess):
     # Definite input and output Tensors for detection_graph
@@ -95,17 +84,16 @@ def detect_objects(image_np, detection_graph, sess):
 
 def draw_box_on_image(num_hands_detect, score_thresh, scores, boxes, im_width, im_height, image_np):
     for i in range(len(scores)):
-        (left, right, top, bottom) = (boxes[i][1] * im_width, boxes[i][3] * im_width,
-                                      boxes[i][0] * im_height, boxes[i][2] * im_height)
-
-        boxArea = (right-left)*(bottom-top)
-        imgArea = (im_width)*(im_height)
-        # print(boxArea,"box area")
-        # print(imgArea,"img area")
-        # print(boxArea/imgArea,"ratio")
-        if (boxArea/imgArea >= 0.1):
+          (left, right, top, bottom) = (boxes[i][1] * im_width, boxes[i][3] * im_width,
+                                        boxes[i][0] * im_height, boxes[i][2] * im_height)
+          
+          boxArea = (right-left)*(bottom-top)
+          imgArea = (im_width)*(im_height)
+          # print(boxArea,"box area")
+          # print(imgArea,"img area")
+          # print(boxArea/imgArea,"ratio")
+          if (boxArea/imgArea>=0.1):
             p1 = (int(left), int(top))
             p2 = (int(right), int(bottom))
-            img = cv2.rectangle(image_np, p1, p2, (77, 255, 9), 10, 10)
-            return img
-            # return image_np[int(top):int(bottom),int(left):int(right),:]
+            img= cv2.rectangle(image_np, p1, p2, (77, 255, 9), 10, 10)
+            return img,image_np[int(top):int(bottom),int(left):int(right),:]
