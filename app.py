@@ -33,7 +33,8 @@ def main():
     We are taking the model with highest accuracy to predict the hand gesture images
     The model is trained with ASL and MSL dataset''')
   # st.subheader("_Pretrained model : -> (Preprocessing is not shown)_")
-
+  st.subheader("Malaysian Sign Language (MSL)")
+  imgInstruction = st.image(cv2.imread("streamlitInstruction.jpg"),  channels="BGR",use_column_width=True)
   sheader = st.error('''**Please upload an image of your hand: ->**\n
     The model will predict the alphabets according to your hand gesture''')
 
